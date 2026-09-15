@@ -328,6 +328,41 @@ void LED_Pattern_1(uint8_t button_status);
 void LED_Pattern_2(void);
 
 /**
+ * @brief The LED_Pattern_3 function controls the user LEDs and the eight LEDs on the PMOD 8LD module.
+ *
+ * This function turns on LED1 with a red color, sets the RGB LED to display a Blue color,
+ * and then initiates a binary down counter pattern on the PMOD 8LD module. The counter starts from 0
+ * and increments up to 255 (0xFF) with a delay of 100 ms between each count. The sequence stops if
+ * a specific switch status is detected or if led_count has reached 0xFF.
+ *
+ *
+ * @param None
+ *
+ * @return None
+ */
+void LED_Pattern_3(void);
+
+
+/**
+ * @brief LED_Pattern_4 controls a ring pattern
+*/
+void LED_Pattern_4(void);
+
+
+
+/**
+ * @brief LED_Pattern_5 controls a down ring counter
+*/
+void LED_Pattern_5(void);
+
+
+
+/**
+ * @brief counts johnsons
+*/
+void Johnson_Counter(void);
+
+/**
  * @brief The LED_Controller function selects and executes an appropriate LED pattern based on button and switch statuses.
  *
  * This function determines the LED pattern to execute based on the given button status and switch status.

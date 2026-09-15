@@ -23,6 +23,8 @@
  *
  */
 
+//#define Task1
+
 #include "../inc/GPIO.h"
 #include "../inc/Clock.h"
 
@@ -44,7 +46,14 @@ const uint8_t RGB_LED_WHITE         =   0x07;
 const uint8_t PMOD_8LD_ALL_OFF      =   0x00;
 const uint8_t PMOD_8LD_ALL_ON       =   0xFF;
 const uint8_t PMOD_8LD_0_3_ON       =   0x0F;
-const uint8_t PMOD_8LD_4_7_ON       =   0xF0;
+const uint8_t PMOD_8LD_4_7_ON       =   0xF0;\
+
+#ifdef Task1
+
+const uint8_t PMOD_8LD_ODD_ON       =   0xAA;
+const uint8_t PMOD_8LD_EVEN_ON       =   0x44;
+#endif
+
 
 void LED1_Init(void)
 {
@@ -133,6 +142,61 @@ uint8_t Get_PMOD_SWT_Status(void)
     return switch_status;
 }
 
+#ifdef Task1
+
+void LED_Pattern_1(uint8_t button_status){
+
+    switch(button_status)
+    {
+        // Button 1 and Button 2 are pressed
+        case 0x00:
+        {
+            LED1_Output(RED_LED_ON); // change this to toggle every second 
+            LED2_Output(RGB_LED_GREEN);
+            PMOD_8LD_Output(PMOD_8LD_ALL_OFF);
+            Clock_Delay1ms(100);
+            LED1_Output(RED_LED_OFF); // change this to toggle every second 
+            LED2_Output(RGB_LED_OFF);
+            PMOD_8LD_Output(PMOD_8LD_ALL_OFF);
+            Clock_Delay1ms(100);
+            break;
+        }
+
+        // Button 1 is pressed
+        // Button 2 is not pressed
+        case 0x10:
+        {
+            LED1_Output(RED_LED_ON);
+            LED2_Output(RGB_LED_OFF);
+            PMOD_8LD_Output(PMOD_8LD_EVEN_ON);
+            break;
+        }
+
+        // Button 1 is not pressed
+        // Button 2 is pressed
+        case 0x02:
+        {
+            LED1_Output(RED_LED_OFF);
+            LED2_Output(RGB_LED_BLUE);
+            PMOD_8LD_Output(PMOD_8LD_ODD_ON);
+            
+            break;
+        }
+
+        // Button 1 and Button 2 are not pressed
+        case 0x12:
+        {
+            LED1_Output(RED_LED_OFF);
+            LED2_Output(RGB_LED_OFF);
+            PMOD_8LD_Output(PMOD_8LD_ALL_ON);
+            break;
+        }
+    }
+
+}
+
+#else 
+
 void LED_Pattern_1(uint8_t button_status)
 {
     switch(button_status)
@@ -177,6 +241,8 @@ void LED_Pattern_1(uint8_t button_status)
     }
 }
 
+#endif
+
 void LED_Pattern_2(void)
 {
     LED1_Output(RED_LED_ON);
@@ -194,6 +260,70 @@ void LED_Pattern_2(void)
     }
 }
 
+#ifdef Task1
+//
+void LED_Pattern_3(void){
+    //turn led1 (on the pmd?- nope the red)  
+    //rgb turn blue
+    //8ld down count in binary
+    LED1_Output(RED_LED_ON);
+    LED2_Output(RGB_LED_BLUE);
+
+    for(uint8_t downer = 0xFF; downer >= 0; downer--){
+        PMOD_8LD_Output(downer);
+        Clock_Delay1ms(100);
+
+        if (switch_status != 0x02);
+        {
+            break;
+        }
+    }
+
+}
+
+
+
+void LED_Pattern_4(void){
+    //Ring counter 
+    LED1_Output(RED_LED_OFF);
+    LED2_Output(RGB_LED_OFF);
+    uint8_t RingInt = 0x01;
+    while(switch_status != 0x04){
+        PMOD_8LD_Output(RingInt);
+        RingInt << 1; 
+        Clock_Delay1ms(100);
+    }
+}
+
+
+void LED_Pattern_5(void){
+    //Ring counter 
+    LED1_Output(RED_LED_OFF);
+    LED2_Output(RGB_LED_OFF);
+    uint8_t RingInt = 0x80;
+    while(switch_status != 0x08){
+        PMOD_8LD_Output(RingInt);
+        RingInt >> 1; 
+        Clock_Delay1ms(100);
+    }
+}
+
+void Johnson_Counter(void){
+    
+    LED1_Output(RED_LED_ON);
+    LED2_Output(RGB_LED_GREEN);
+
+    //johnson Count
+    uint8_t Johnson = 0x01;
+    while(switch_status != 0x03){
+        PMOD_8LD_Output(Johnson);
+        Johnson << 0x01;
+        Johnson = Johnson ^ 0x01; 
+        Clock_Delay1ms(200);
+    }
+}
+#endif
+
 void LED_Controller(uint8_t button_status, uint8_t switch_status)
 {
     switch(switch_status)
@@ -209,6 +339,26 @@ void LED_Controller(uint8_t button_status, uint8_t switch_status)
             LED_Pattern_2();
         }
         break;
+        
+    #ifdef Task1
+        case 0x04:
+        {
+            LED_Pattern_3();
+        }
+        break;
+
+        case 0x08:
+        {
+            LED_Pattern_4();
+        }
+        break;
+
+        case 0x03:
+        {
+            Johnson_Counter();
+        }
+        break;
+    #endif
 
         default:
         {
