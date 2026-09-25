@@ -302,9 +302,9 @@ uint8_t Get_PMOD_SWT_Status(void);
  *
  *  button_status      LED 1 Color      RGB LED Color
  *  -------------      -----------      -------------
- *      0x00               Red              Red
+ *      0x00               Red/Toggle       Red/Toggle
  *      0x10               Red              Off
- *      0x02               Off              Green
+ *      0x02               Off              Green/Blue
  *      0x12               Off              Off
  *
  *
@@ -326,6 +326,67 @@ void LED_Pattern_1(uint8_t button_status);
  * @return None
  */
 void LED_Pattern_2(void);
+
+/**
+ * @brief The LED_Pattern_3 function controls the LEDs and the eight LEDs on the PMOD 8LD module.
+ *
+ * This function turns on LED1 with a red color, sets the RGB LED to display a blue color,
+ * and then initiates a binary down counter pattern on the PMOD 8LD module. The counter starts from 255 (0xFF)
+ * and decrements down to 0 with a delay of 100 ms between each count. The sequence stops if
+ * a specific switch status is detected or if led_count has reached 0.
+ *
+ *
+ * @param None
+ *
+ * @return None
+ */
+void LED_Pattern_3(void);
+
+/**
+ * @brief The LED_Pattern_4 function controls the LEDs and the eight LEDs on the PMOD 8LD module.
+ *
+ * This functions generates a ring counter pattern by setting one bit every iteration. In the first
+ * iteration, the least significant bit is set to 1. Then, for every iteration, the "1" bit
+ * shifts to the left, rotating through every bit position until it returns to the original position.
+ * The delay rate for each iteration should be 200 ms.
+ *
+ *
+ * @param None
+ *
+ * @return None
+ */
+void LED_Pattern_4(void);
+
+/**
+ * @brief The LED_Pattern_5 function controls the LEDs and the eight LEDs on the PMOD 8LD module.
+ *
+ * This function generates a ring counter pattern by setting one bit every iteration. In the first
+ * iteration, the most significant bit is set to 1. Then, for every iteration, the "1" bit shifts
+ * to the right, rotating through every bit position until it returns to the original position.
+ * The delay rate for each iteration should be 200 ms.
+ *
+ *
+ * @param None
+ *
+ * @return None
+ */
+void LED_Pattern_5(void);
+
+/**
+ * @brief The Johnson_Counter function controls the LEDs and the eight LEDs on the PMOD 8LD module.
+ *
+ * This function should generate an 8-bit Johnson (also known as twisted ring) counter
+ * pattern. It should start the sequence at all zeroes and update the pattern by shifting
+ * left by one bit and inserting the inverted previous MSB into Bit 0. An example
+ * sequence is shown in the table below. The delay rate for each iteration should be
+ * 200 ms.
+ *
+ *
+ * @param None
+ *
+ * @return None
+ */
+void Johnson_Counter(void);
 
 /**
  * @brief The LED_Controller function selects and executes an appropriate LED pattern based on button and switch statuses.
